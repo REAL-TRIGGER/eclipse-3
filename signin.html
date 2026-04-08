@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eclipse 3.0 – Sign In</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #0d0f14;
+      font-family: Arial;
+      color: white;
+      text-align: center;
+    }
+    .container { margin-top: 120px; }
+    .box {
+      background: #11141b;
+      padding: 30px;
+      width: 350px;
+      margin: auto;
+      border-radius: 12px;
+    }
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #1a1e27;
+      color: white;
+    }
+    button {
+      width: 95%;
+      padding: 12px;
+      background: #4255ff;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #error { color: red; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Eclipse 3.0</h1>
+
+    <div class="box">
+      <input id="email" type="email" placeholder="Email">
+      <input id="password" type="password" placeholder="Password">
+
+      <button onclick="signIn()">Sign In</button>
+      <button onclick="signUp()">Sign Up</button>
+
+      <p id="error"></p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    // 🔥 REPLACE THIS WITH YOUR REAL KEY
+    const client = createClient(
+      "https://fjkybogixlqecziuxfui.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqa3lib2dpeGxxZWN6aXV4ZnVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxNjMzODIsImV4cCI6MjA5MDczOTM4Mn0.3HMJoP1o-V-TnKBoYDjaCy8G7wAOb4T17jRLJauQSIo"
+    );
+
+    window.signIn = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const { error } = await client.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        window.location.href = "dashboard/index.html";
+      } catch (err) {
+        document.getElementById("error").innerText = err.message;
+      }
+    };
+
+    window.signUp = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const { error } = await client.auth.signUp({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        document.getElementById("error").innerText = "Account created! Now sign in.";
+      } catch (err) {
+        document.getElementById("error").innerText = err.message;
+      }
+    };
+  </script>
+</body>
+</html>
