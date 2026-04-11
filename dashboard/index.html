@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eclipse 3.0 – Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #0d0f14;
+      font-family: Arial, sans-serif;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .box {
+      background: #11141b;
+      padding: 40px;
+      width: 420px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .title {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    #userInfo {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #a0a4b8;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #4255ff;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #5f72ff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <div class="title">Welcome to Eclipse 3.0</div>
+    <div id="userInfo">Loading user...</div>
+
+    <button onclick="logout()">Log Out</button>
+  </div>
+
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>
