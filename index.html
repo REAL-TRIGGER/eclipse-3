@@ -1,135 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eclipse 3.0 – Sign In</title>
+  <meta charset="UTF-8">
+  <title>Eclipse 3.0 – Sign In</title>
 
+  <style>
+    body {
+      margin: 0;
+      background: #0d0f14;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #0d0f14;
-            font-family: Arial, sans-serif;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    .wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
 
-        .card {
-            background: #11141b;
-            padding: 40px;
-            border-radius: 14px;
-            width: 350px;
-            text-align: center;
-            box-shadow: 0 0 25px rgba(66, 85, 255, 0.25);
-            animation: fadeIn 0.8s ease;
-        }
+    .left, .right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .left {
+      background: #0d0f14;
+      border-right: 1px solid #1a1e27;
+    }
 
-        .title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #4255ff;
-        }
+    .right {
+      background: #11141b;
+    }
 
-        .subtitle {
-            font-size: 14px;
-            margin-bottom: 30px;
-            color: #c7c7c7;
-        }
+    .box {
+      background: #11141b;
+      padding: 30px;
+      width: 350px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-radius: 6px;
-            border: none;
-            font-size: 15px;
-        }
+    .title {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #4255ff;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+    .subtitle {
+      font-size: 14px;
+      color: #a0a4b8;
+      margin-bottom: 20px;
+    }
 
-        button:hover {
-            background: #2f3edb;
-        }
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      background: #1a1e27;
+      color: white;
+    }
 
-        .error {
-            color: #ff6b6b;
-            margin-top: 10px;
-        }
-    </style>
+    button {
+      width: 95%;
+      padding: 12px;
+      background: #4255ff;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #5f72ff;
+    }
+
+    #error {
+      color: #ff4b4b;
+      margin-top: 10px;
+      min-height: 18px;
+      font-size: 13px;
+    }
+
+    .right-content {
+      max-width: 350px;
+      text-align: left;
+    }
+
+    .right-title {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .right-text {
+      font-size: 14px;
+      color: #b0b4c8;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .outline-btn {
+      width: auto;
+      padding: 10px 20px;
+      background: transparent;
+      border-radius: 6px;
+      border: 1px solid #4255ff;
+      color: #ffffff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .outline-btn:hover {
+      background: #4255ff33;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="card">
+  <div class="wrapper">
+    <!-- LEFT: SIGN IN -->
+    <div class="left">
+      <div class="box">
         <div class="title">Eclipse 3.0</div>
-        <div class="subtitle">Sign in to continue</div>
+        <div class="subtitle">Sign in to access your dashboard</div>
 
-        <input id="email" type="email" placeholder="Email" />
-        <input id="password" type="password" placeholder="Password" />
+        <input id="email" type="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Password">
 
-        <button onclick="login()">Sign In</button>
-        <button onclick="signup()">Create Account</button>
+        <button onclick="signIn()">Sign In</button>
 
-        <div id="error" class="error"></div>
+        <p id="error"></p>
+      </div>
     </div>
 
-    <script>
-        const supabase = supabase.createClient(
-            "https://fjkybogixlqecziuxfui.supabase.co",
-            "sb_publishable_SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_"
-        );
+    <!-- RIGHT: NEW TO ECLIPSE -->
+    <div class="right">
+      <div class="right-content">
+        <div class="right-title">New to Eclipse?</div>
+        <p class="right-text">
+          Create your Eclipse account to unlock your dashboard, AI tools, and future features.
+        </p>
+        <button class="outline-btn" onclick="goToSignUp()">Sign up here</button>
+      </div>
+    </div>
+  </div>
 
-        async function login() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
+    const client = createClient(
+      "https://fjkybogixlqecziuxfui.supabase.co",
+      "sb_publishable_SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_"
+    );
 
-            if (error) {
-                document.getElementById("error").innerText = error.message;
-            } else {
-                window.location.href = "dashboard.html";
-            }
-        }
+    window.signIn = async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-        async function signup() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+      const errorEl = document.getElementById("error");
+      errorEl.innerText = "";
 
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password
-            });
+      try {
+        const { error } = await client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
 
-            if (error) {
-                document.getElementById("error").innerText = error.message;
-            } else {
-                alert("Account created! You can now sign in.");
-            }
-        }
-    </script>
+        window.location.href = "dashboard/index.html";
+      } catch (err) {
+        errorEl.innerText = err.message || "Sign in failed.";
+      }
+    };
+
+    window.goToSignUp = () => {
+      window.location.href = "signup.html";
+    };
+  </script>
 </body>
 </html>
