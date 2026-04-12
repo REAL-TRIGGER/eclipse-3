@@ -17,7 +17,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      transition: margin-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: margin-left 0.3s ease;
     }
 
     /* MAIN BOX */
@@ -28,7 +28,7 @@
       border-radius: 12px;
       text-align: center;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
-      transition: margin-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: margin-left 0.3s ease;
     }
 
     .title {
@@ -71,39 +71,35 @@
       padding-top: 20px;
       display: flex;
       flex-direction: column;
-      transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      z-index: 10;
+      align-items: center; /* ALWAYS centered */
+      transition: width 0.3s ease;
       overflow: hidden;
-      align-items: center;
+      z-index: 10;
     }
 
     .sidebar:hover {
       width: 230px;
-      align-items: flex-start;
     }
 
     /* LOGO */
     .sidebar-logo {
-      width: 46px;
-      height: 46px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       object-fit: cover;
       margin-bottom: 20px;
-      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-                  margin-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: transform 0.3s ease;
     }
 
     .sidebar:hover .sidebar-logo {
-      transform: scale(1.05);
-      margin-left: 20px;
+      transform: scale(1.08);
     }
 
+    /* TITLE */
     .sidebar-title {
       color: #fff;
       font-size: 18px;
       font-weight: bold;
-      text-align: left;
-      margin-left: 20px;
       margin-bottom: 25px;
       opacity: 0;
       transition: opacity 0.25s ease;
@@ -113,21 +109,23 @@
       opacity: 1;
     }
 
+    /* NAV ITEMS */
     .sidebar-item {
-      padding: 12px 20px;
+      width: 100%;
+      padding: 12px 0;
       color: #ccc;
       text-decoration: none;
       font-size: 15px;
       display: flex;
       align-items: center;
+      justify-content: center; /* ICONS CENTERED */
       gap: 12px;
-      white-space: nowrap;
-      width: 100%;
+      position: relative;
       transition: background 0.2s ease;
     }
 
     .sidebar-item i {
-      font-size: 18px;
+      font-size: 20px;
       width: 25px;
       text-align: center;
     }
@@ -136,13 +134,19 @@
       background: #1a1d26;
     }
 
+    /* TEXT LABELS */
     .sidebar-text {
+      position: absolute;
+      left: 80px; /* starts off-screen */
       opacity: 0;
-      transition: opacity 0.25s ease;
+      white-space: nowrap;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      transform: translateX(-10px);
     }
 
     .sidebar:hover .sidebar-text {
       opacity: 1;
+      transform: translateX(0);
     }
 
     /* SHIFT MAIN CONTENT */
@@ -227,7 +231,8 @@
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <!-- YOUR ECLIPSE LOGO (save as dashboard/images/eclipse-logo.png) -->
+
+    <!-- YOUR LOGO -->
     <img src="images/eclipse-logo.png" class="sidebar-logo" alt="Eclipse Logo">
 
     <div class="sidebar-title">Eclipse 3.0</div>
