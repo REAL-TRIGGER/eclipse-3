@@ -74,17 +74,33 @@
       transition: width 0.25s ease;
       z-index: 10;
       overflow: hidden;
+      align-items: center;
     }
 
     .sidebar:hover {
       width: 230px;
+      align-items: flex-start;
+    }
+
+    /* LOGO */
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 25px;
+      transition: transform 0.25s ease, margin-left 0.25s ease;
+    }
+
+    .sidebar:hover .sidebar-logo {
+      transform: scale(1.1);
+      margin-left: 20px;
     }
 
     .sidebar-title {
       color: #fff;
       font-size: 20px;
       font-weight: bold;
-      text-align: center;
+      text-align: left;
+      margin-left: 20px;
       margin-bottom: 25px;
       opacity: 0;
       transition: opacity 0.25s ease;
@@ -103,6 +119,7 @@
       align-items: center;
       gap: 12px;
       white-space: nowrap;
+      width: 100%;
     }
 
     .sidebar-item i {
@@ -206,6 +223,10 @@
 
   <!-- SIDEBAR -->
   <div class="sidebar">
+
+    <!-- ECLIPSE LOGO -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Eclipse-logo.svg/2048px-Eclipse-logo.svg.png" class="sidebar-logo">
+
     <div class="sidebar-title">Eclipse 3.0</div>
 
     <a class="sidebar-item" href="#">
