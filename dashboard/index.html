@@ -71,7 +71,7 @@
       padding-top: 20px;
       display: flex;
       flex-direction: column;
-      align-items: center; /* ALWAYS centered */
+      align-items: center;
       transition: width 0.3s ease;
       overflow: hidden;
       z-index: 10;
@@ -118,8 +118,7 @@
       font-size: 15px;
       display: flex;
       align-items: center;
-      justify-content: center; /* ICONS CENTERED */
-      gap: 12px;
+      justify-content: center; /* ICON CENTERED */
       position: relative;
       transition: background 0.2s ease;
     }
@@ -134,14 +133,14 @@
       background: #1a1d26;
     }
 
-    /* TEXT LABELS */
+    /* TEXT LABELS — FIXED VERSION */
     .sidebar-text {
       position: absolute;
-      left: 80px; /* starts off-screen */
+      left: 90px; /* OUTSIDE icon zone */
       opacity: 0;
       white-space: nowrap;
+      transform: translateX(10px);
       transition: opacity 0.25s ease, transform 0.25s ease;
-      transform: translateX(-10px);
     }
 
     .sidebar:hover .sidebar-text {
