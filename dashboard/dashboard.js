@@ -5,7 +5,6 @@ const SUPABASE_ANON_KEY = "sb-publishable-SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_";
 
 const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-
 const userInfoEl = document.getElementById("userInfo");
 const profilePicEl = document.getElementById("profilePic");
 const dropdownMenu = document.getElementById("dropdownMenu");
@@ -18,19 +17,24 @@ const navAdmin = document.getElementById("nav-addon");
 const navSettings = document.getElementById("nav-settings");
 const navOwner = document.getElementById("nav-owner");
 
-profilePicEl.addEventListener("click", () => {
-  dropdownMenu.style.display = dropdownMenu.style.display === "flex" ? "none" : "flex";
-});
+// Toggle profile dropdown
+if (profilePicEl && dropdownMenu) {
+  profilePicEl.addEventListener("click", () => {
+    dropdownMenu.style.display =
+      dropdownMenu.style.display === "flex" ? "none" : "flex";
+  });
 
-window.addEventListener("click", (e) => {
-  if (!profilePicEl.contains(e.target) && !dropdownMenu.contains(e.target)) {
-    dropdownMenu.style.display = "none";
-  }
-});
+  window.addEventListener("click", (e) => {
+    if (!profilePicEl.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownMenu.style.display = "none";
+    }
+  });
+}
 
+// Logout → back to LOGIN at /index.html
 export async function logout() {
   await client.auth.signOut();
-  window.location.href = "index.html";
+  window.location.href = "../index.html";
 }
 window.logout = logout;
 
@@ -54,8 +58,11 @@ async function loadUser() {
   const { data: { session } } = await client.auth.getSession();
 
   if (!session) {
-    userInfoEl.textContent = "No session. Redirecting to login…";
-    window.location.href = "index.html";
+    if (userInfoEl) {
+      userInfoEl.textContent = "No session. Redirecting to login…";
+    }
+    // IMPORTANT: dashboard → login at ROOT
+    window.location.href = "../index.html";
     return;
   }
 
@@ -74,18 +81,23 @@ async function loadUser() {
 
   console.log("Loaded ROLE:", role);
 
-  userInfoEl.textContent =
-    `Name: ${fullName}\nEmail: ${user.email}\nRole: ${role}`;
+  if (userInfoEl) {
+    userInfoEl.textContent =
+      `Name: ${fullName}\nEmail: ${user.email}\nRole: ${role}`;
+  }
 
   if (userNameEl) userNameEl.textContent = fullName;
   if (userEmailEl) userEmailEl.textContent = user.email || "";
 
-  if (user.user_metadata?.avatar_url) {
+  if (user.user_metadata?.avatar_url && profilePicEl) {
     profilePicEl.src = user.user_metadata.avatar_url;
-  } else {
-    profilePicEl.src = "https://api.dicebear.com/7.x/identicon/svg?seed=" + encodeURIComponent(fullName);
+  } else if (profilePicEl) {
+    profilePicEl.src =
+      "https://api.dicebear.com/7.x/identicon/svg?seed=" +
+      encodeURIComponent(fullName);
   }
 
+  // Role-based nav visibility
   if (role !== "VIP" && role !== "Admin" && role !== "Owner") {
     if (navVIP) navVIP.style.display = "none";
   }
