@@ -5,10 +5,11 @@ const client = createClient(
   "sb_publishable_SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_"
 );
 
-// Wait for Supabase to restore session
+// Load user session and update UI
 async function loadUser() {
   const { data: { session } } = await client.auth.getSession();
 
+  // If no session, redirect to login
   if (!session) {
     window.location.href = "../index.html";
     return;
@@ -30,6 +31,7 @@ async function loadUser() {
   setupDropdown();
 }
 
+// Dropdown logic
 function setupDropdown() {
   const profilePic = document.getElementById("profilePic");
   const dropdown = document.getElementById("dropdownMenu");
@@ -47,10 +49,20 @@ function setupDropdown() {
   });
 }
 
+// Sidebar collapse logic
+window.toggleSidebar = function () {
+  const sidebar = document.getElementById("sidebar");
+  const body = document.body;
+
+  sidebar.classList.toggle("collapsed");
+  body.classList.toggle("collapsed");
+};
+
+// Logout function
 export async function logout() {
   await client.auth.signOut();
   window.location.href = "../index.html";
 }
 
-// Load user on page start
+// Run on page load
 loadUser();
