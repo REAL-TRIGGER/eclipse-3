@@ -17,7 +17,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      transition: margin-left 0.25s ease;
+      transition: margin-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     /* MAIN BOX */
@@ -28,7 +28,7 @@
       border-radius: 12px;
       text-align: center;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
-      transition: margin-left 0.25s ease;
+      transition: margin-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .title {
@@ -71,7 +71,7 @@
       padding-top: 20px;
       display: flex;
       flex-direction: column;
-      transition: width 0.25s ease;
+      transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       z-index: 10;
       overflow: hidden;
       align-items: center;
@@ -84,20 +84,23 @@
 
     /* LOGO */
     .sidebar-logo {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 25px;
-      transition: transform 0.25s ease, margin-left 0.25s ease;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+                  margin-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .sidebar:hover .sidebar-logo {
-      transform: scale(1.1);
+      transform: scale(1.05);
       margin-left: 20px;
     }
 
     .sidebar-title {
       color: #fff;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       text-align: left;
       margin-left: 20px;
@@ -120,6 +123,7 @@
       gap: 12px;
       white-space: nowrap;
       width: 100%;
+      transition: background 0.2s ease;
     }
 
     .sidebar-item i {
@@ -143,11 +147,11 @@
 
     /* SHIFT MAIN CONTENT */
     body.with-sidebar .box {
-      margin-left: 70px;
+      margin-left: 90px;
     }
 
-    body.with-sidebar:hover .box {
-      margin-left: 230px;
+    .sidebar:hover ~ .box {
+      margin-left: 250px;
     }
 
     /* PROFILE DROPDOWN */
@@ -223,9 +227,8 @@
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-
-    <!-- ECLIPSE LOGO -->
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Eclipse-logo.svg/2048px-Eclipse-logo.svg.png" class="sidebar-logo">
+    <!-- YOUR ECLIPSE LOGO (save as dashboard/images/eclipse-logo.png) -->
+    <img src="images/eclipse-logo.png" class="sidebar-logo" alt="Eclipse Logo">
 
     <div class="sidebar-title">Eclipse 3.0</div>
 
