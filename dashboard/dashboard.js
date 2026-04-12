@@ -5,7 +5,6 @@ const client = createClient(
   "sb_publishable_SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_"
 );
 
-// Load user session and update UI
 async function loadUser() {
   const { data: { session } } = await client.auth.getSession();
 
@@ -27,7 +26,6 @@ async function loadUser() {
   setupDropdown();
 }
 
-// Dropdown logic
 function setupDropdown() {
   const profilePic = document.getElementById("profilePic");
   const dropdown = document.getElementById("dropdownMenu");
@@ -43,7 +41,6 @@ function setupDropdown() {
   });
 }
 
-// Logout
 export async function logout() {
   await client.auth.signOut();
   window.location.href = "../index.html";
