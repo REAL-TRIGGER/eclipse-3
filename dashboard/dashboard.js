@@ -30,7 +30,7 @@ window.addEventListener("click", (e) => {
 
 export async function logout() {
   await client.auth.signOut();
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
 window.logout = logout;
 
@@ -55,7 +55,7 @@ async function loadUser() {
 
   if (!session) {
     userInfoEl.textContent = "No session. Redirecting to login…";
-    window.location.href = "login.html";
+    window.location.href = "index.html";
     return;
   }
 
