@@ -1,9 +1,13 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://fjkybogixlqecziuxfui.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_";
 
-const client = createClient(https://fjkybogixlqecziuxfui.supabase.co, sb_publishable_SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_);
+const client = createClient(
+  "https://fjkybogixlqecziuxfui.supabase.co",
+  "sb-publishable-SjaaZzJG2Q7SLPSQD3hKOg_9h-BNCk_"
+);
+
 
 // -----------------------------
 // OWNER AUTH CHECK
