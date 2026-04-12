@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eclipse 3.0 – Owner Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      background: #0d0f14;
+      font-family: Arial, sans-serif;
+      color: white;
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #11141b;
+      border-right: 1px solid #222;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .sidebar h2 {
+      margin: 0 0 10px 0;
+      font-size: 22px;
+    }
+
+    .sidebar p {
+      margin: 4px 0;
+      color: #a0a4b8;
+      font-size: 14px;
+    }
+
+    .content {
+      flex: 1;
+      padding: 30px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .title {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #a0a4b8;
+      margin-bottom: 25px;
+    }
+
+    .section {
+      background: #1a1d26;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #4255ff33;
+      color: #c5cbff;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+    ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .danger {
+      color: #ff6b6b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <h2><i class="fa-solid fa-crown"></i> Owner Panel</h2>
+    <p>You are logged in as <span id="ownerName">Owner</span>.</p>
+    <p class="danger">This area controls the entire site.</p>
+  </div>
+
+  <div class="content">
+    <div class="title">Eclipse Control Room</div>
+    <div class="subtitle">
+      This is the core Owner Panel shell. All future tools will plug into this page.
+    </div>
+
+    <div class="section">
+      <h2>System Overview <span class="badge">Phase A</span></h2>
+      <p>
+        You are viewing a protected Owner-only page. Non-Owner users will be redirected away
+        automatically. From here, we’ll add:
+      </p>
+      <ul>
+        <li>Role & Permission Manager</li>
+        <li>User Management (promote, demote, terminate)</li>
+        <li>Sidebar Builder (add/remove tabs)</li>
+        <li>Page Builder (drag-and-drop content)</li>
+        <li>System Settings (theme, logo, integrations)</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Security Status</h2>
+      <p id="securityStatus">Checking your Owner status…</p>
+    </div>
+  </div>
+
+  <script type="module" src="owner.js"></script>
+</body>
+</html>
