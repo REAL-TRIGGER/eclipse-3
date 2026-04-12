@@ -47,3 +47,115 @@ async function checkOwner() {
 }
 
 checkOwner();
+
+// -----------------------------
+// ROLE MANAGER (PHASE B)
+// -----------------------------
+
+async function loadRoles() {
+  const rolesList = document.getElementById("rolesList");
+
+  const { data: roles, error } = await client
+    .from("roles")
+    .select("*")
+    .order("name", { ascending: true });
+
+  if (error) {
+    rolesList.innerHTML = "Error loading roles.";
+    return;
+  }
+
+  let html = `
+    <table style="width:100%; border-collapse:collapse;">
+      <tr style="background:#222;">
+        <th style="padding:10px; text-align:left;">Role</th>
+        <th style="padding:10px; text-align:left;">Permissions</th>
+        <th style="padding:10px;">Actions</th>
+      </tr>
+  `;
+
+  roles.forEach(role => {
+    html += `
+      <tr style="border-bottom:1px solid #333;">
+        <td style="padding:10px;">${role.name}</td>
+        <td style="padding:10px; color:#a0a4b8;">${JSON.stringify(role.permissions)}</td>
+        <td style="padding:10px;">
+          <button onclick="editRole('${role.id}')" style="padding:6px 10px;">Edit</button>
+          <button onclick="deleteRole('${role.id}')" style="padding:6px 10px; background:#ff4444; color:white;">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += "</table>";
+
+  rolesList.innerHTML = html;
+}
+
+window.loadRoles = loadRoles;
+
+async function createRole() {
+  const name = prompt("Enter new role name:");
+
+  if (!name) return;
+
+  const { error } = await client
+    .from("roles")
+    .insert({ name, permissions: {} });
+
+  if (error) {
+    alert("Error creating role.");
+    return;
+  }
+
+  loadRoles();
+}
+
+document.getElementById("createRoleBtn").onclick = createRole;
+
+async function deleteRole(id) {
+  if (!confirm("Delete this role?")) return;
+
+  const { error } = await client
+    .from("roles")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Error deleting role.");
+    return;
+  }
+
+  loadRoles();
+}
+
+window.deleteRole = deleteRole;
+
+async function editRole(id) {
+  const newPerms = prompt("Enter permissions as JSON (example: {\"canBan\":true}):");
+
+  if (!newPerms) return;
+
+  let parsed;
+  try {
+    parsed = JSON.parse(newPerms);
+  } catch {
+    alert("Invalid JSON.");
+    return;
+  }
+
+  const { error } = await client
+    .from("roles")
+    .update({ permissions: parsed })
+    .eq("id", id);
+
+  if (error) {
+    alert("Error updating role.");
+    return;
+  }
+
+  loadRoles();
+}
+
+window.editRole = editRole;
+
