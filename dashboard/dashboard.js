@@ -17,6 +17,24 @@ const navAdmin = document.getElementById("nav-addon");
 const navSettings = document.getElementById("nav-settings");
 const navOwner = document.getElementById("nav-owner");
 
+async function checkUser() {
+  const { data: { user } } = await client.auth.getUser();
+
+  if (!user) {
+    // If no user is logged in, send them back to login
+    window.location.href = "signin.html";
+    return;
+  }
+
+  // If user exists, fill in the UI
+  userNameEl.textContent = user.user_metadata.full_name || "User";
+  userEmailEl.textContent = user.email;
+  // If you have a profile picture URL in metadata:
+  // profilePicEl.src = user.user_metadata.avatar_url || "default-avatar.png";
+}
+
+checkUser();
+
 // Toggle profile dropdown
 if (profilePicEl && dropdownMenu) {
   profilePicEl.addEventListener("click", () => {
