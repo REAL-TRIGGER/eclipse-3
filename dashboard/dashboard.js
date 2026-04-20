@@ -25,12 +25,12 @@ if (profilePicEl && dropdownMenu) {
   });
 
   window.addEventListener("click", (e) => {
+    // If the click is NOT on the profile pic AND NOT on the menu, hide it
     if (!profilePicEl.contains(e.target) && !dropdownMenu.contains(e.target)) {
       dropdownMenu.style.display = "none";
     }
   });
 }
-
 // Logout → back to LOGIN at /index.html
 export async function logout() {
   await client.auth.signOut();
