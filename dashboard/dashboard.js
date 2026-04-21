@@ -54,13 +54,13 @@ userEmailEl.textContent = user.email;
 
     // 6. Show nav items based on role
     if (profile.role === "vip" || profile.role === "admin" || profile.role === "owner") {
-        if (navVIP) navVIP.style.display = "block";
-    }
-    if (profile.role === "admin" || profile.role === "owner") {
-        if (navAdmin) navAdmin.style.display = "block";
-    }
-    if (profile.role === "owner") {
-        if (navOwner) navOwner.style.display = "block";
+    if (navVIP) navVIP.style.cssText = "display:flex; width:100%;";
+}
+if (profile.role === "admin" || profile.role === "owner") {
+    if (navAdmin) navAdmin.style.cssText = "display:flex; width:100%;";
+}
+if (profile.role === "owner") {
+    if (navOwner) navOwner.style.cssText = "display:flex; width:100%;";
     }
 }
 
