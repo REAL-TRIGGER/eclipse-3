@@ -82,4 +82,11 @@ document.getElementById("signOut")?.addEventListener("click", async () => {
     window.location.href = "signin.html";
 });
 
-initDashboard();
+// Wait for auth to be ready before initializing
+client.auth.onAuthStateChange(async (event, session) => {
+    if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+        await initDashboard();
+    } else if (event === "SIGNED_OUT") {
+        window.location.href = "signin.html";
+    }
+});
