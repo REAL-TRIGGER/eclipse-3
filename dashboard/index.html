@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Eclipse 3.0 – Dashboard</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <style>
     body {
       margin: 0;
@@ -18,7 +16,6 @@
       height: 100vh;
       transition: margin-left 0.3s ease;
     }
-
     .box {
       background: #11141b;
       padding: 40px;
@@ -28,19 +25,16 @@
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
       transition: margin-left 0.3s ease;
     }
-
     .title {
       font-size: 28px;
       margin-bottom: 20px;
     }
-
     #userInfo {
       margin-top: 15px;
       font-size: 16px;
       color: #a0a4b8;
       white-space: pre-line;
     }
-
     button {
       margin-top: 20px;
       padding: 12px 20px;
@@ -52,11 +46,7 @@
       font-size: 15px;
       font-weight: bold;
     }
-
-    button:hover {
-      background: #5f72ff;
-    }
-
+    button:hover { background: #5f72ff; }
     .sidebar {
       position: fixed;
       top: 0;
@@ -73,11 +63,7 @@
       overflow: hidden;
       z-index: 10;
     }
-
-    .sidebar:hover {
-      width: 230px;
-    }
-
+    .sidebar:hover { width: 230px; }
     .sidebar-logo {
       width: 48px;
       height: 48px;
@@ -86,11 +72,7 @@
       margin-bottom: 20px;
       transition: transform 0.3s ease;
     }
-
-    .sidebar:hover .sidebar-logo {
-      transform: scale(1.08);
-    }
-
+    .sidebar:hover .sidebar-logo { transform: scale(1.08); }
     .sidebar-title {
       color: #fff;
       font-size: 18px;
@@ -99,11 +81,7 @@
       opacity: 0;
       transition: opacity 0.25s ease;
     }
-
-    .sidebar:hover .sidebar-title {
-      opacity: 1;
-    }
-
+    .sidebar:hover .sidebar-title { opacity: 1; }
     .sidebar-item {
       width: 100%;
       padding: 12px 0;
@@ -116,22 +94,14 @@
       position: relative;
       transition: background 0.2s ease;
     }
-
     .sidebar-item i {
       font-size: 20px;
       width: 25px;
       text-align: center;
       transition: opacity 0.2s ease;
     }
-
-    .sidebar:hover .sidebar-item i {
-      opacity: 0;
-    }
-
-    .sidebar-item:hover {
-      background: #1a1d26;
-    }
-
+    .sidebar:hover .sidebar-item i { opacity: 0; }
+    .sidebar-item:hover { background: #1a1d26; }
     .sidebar-text {
       position: absolute;
       left: 90px;
@@ -140,27 +110,15 @@
       transform: translateX(10px);
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
-
-    .sidebar:hover .sidebar-text {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    body.with-sidebar .box {
-      margin-left: 90px;
-    }
-
-    .sidebar:hover ~ .box {
-      margin-left: 250px;
-    }
-
+    .sidebar:hover .sidebar-text { opacity: 1; transform: translateX(0); }
+    body.with-sidebar .box { margin-left: 90px; }
+    .sidebar:hover ~ .box { margin-left: 250px; }
     .profile-container {
       position: absolute;
       top: 20px;
       right: 20px;
       z-index: 20;
     }
-
     .profile-pic {
       width: 45px;
       height: 45px;
@@ -168,7 +126,6 @@
       cursor: pointer;
       border: 2px solid #4255ff;
     }
-
     .dropdown {
       position: absolute;
       top: 55px;
@@ -183,23 +140,13 @@
       padding: 10px 0;
       animation: fadeIn 0.15s ease-out;
     }
-
     .dropdown-item {
       padding: 10px 15px;
       color: #ccc;
       font-size: 14px;
     }
-
-    .dropdown-item:hover {
-      background: #1a1d26;
-    }
-
-    .dropdown-divider {
-      height: 1px;
-      background: #333;
-      margin: 8px 0;
-    }
-
+    .dropdown-item:hover { background: #1a1d26; }
+    .dropdown-divider { height: 1px; background: #333; margin: 8px 0; }
     .logout-btn {
       width: 100%;
       padding: 10px;
@@ -210,11 +157,7 @@
       cursor: pointer;
       border-radius: 6px;
     }
-
-    .logout-btn:hover {
-      background: #ff5555;
-    }
-
+    .logout-btn:hover { background: #ff5555; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-5px); }
       to { opacity: 1; transform: translateY(0); }
@@ -233,12 +176,13 @@
       <span class="sidebar-text">Home</span>
     </a>
 
-    <a class="sidebar-item" id="nav-vip" href="#">
+    <!-- Hidden by default — JS will show based on role -->
+    <a class="sidebar-item" id="nav-vip" href="#" style="display:none">
       <i class="fa-solid fa-star"></i>
       <span class="sidebar-text">VIP</span>
     </a>
 
-    <a class="sidebar-item" id="nav-addon" href="#">
+    <a class="sidebar-item" id="nav-addon" href="#" style="display:none">
       <i class="fa-solid fa-shield-halved"></i>
       <span class="sidebar-text">Admin</span>
     </a>
@@ -248,7 +192,7 @@
       <span class="sidebar-text">Settings</span>
     </a>
 
-    <a class="sidebar-item" id="nav-owner" href="owner.html">
+    <a class="sidebar-item" id="nav-owner" href="owner.html" style="display:none">
       <i class="fa-solid fa-crown"></i>
       <span class="sidebar-text">Owner Panel</span>
     </a>
@@ -257,21 +201,20 @@
   <div class="profile-container">
     <img id="profilePic" class="profile-pic" src="" alt="Profile">
     <div class="dropdown" id="dropdownMenu">
-      <div class="dropdown-item" id="userName"></div>
+      <div class="dropdown-item" id="userName">Loading...</div>
       <div class="dropdown-item" id="userEmail"></div>
       <div class="dropdown-divider"></div>
-      <button class="logout-btn" onclick="logout()">Log Out</button>
+      <button class="logout-btn" id="logoutBtn">Log Out</button>
     </div>
   </div>
 
   <div class="box">
     <div class="title">Welcome to Eclipse 3.0</div>
     <div id="userInfo">Loading user...</div>
-    <button onclick="logout()">Log Out</button>
+    <button id="logoutBtn2">Log Out</button>
   </div>
 
 <script type="module" src="dashboard.js?v=999999"></script>
-
 
 </body>
 </html>
