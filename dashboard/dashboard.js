@@ -18,12 +18,50 @@ const navOwner = document.getElementById("nav-owner");
 async function initDashboard() {
     // 1. Check if user is logged in
     const { data: { user }, error: authError } = await client.auth.getUser();
-
     if (authError || !user) {
         window.location.href = "signin.html";
         return;
     }
 
+    // 2. Hide ALL role-gated nav items by default first
+    if (navVIP) navVIP.style.display = "none";
+    if (navAdmin) navAdmin.style.display = "none";
+    if (navOwner) navOwner.style.display = "none";
+
+    // 3. Fetch profile data
+    const { data: profile, error: profileError } = await client
+        .from("profiles")
+        .select("role, full_name, avatar_url")
+        .eq("id", user.id)
+        .single();
+
+    // 4. If profile fetch fails, treat as unauthorized
+    if (profileError || !profile) {
+        console.error("Profile fetch failed:", profileError);
+        window.location.href = "signin.html";
+        return;
+    }
+
+    // 5. Populate UI
+    userNameEl.textContent = profile.full_name || "User";
+    userEmailEl.textContent = user.email;
+
+    if (profile.avatar_url) {
+        profilePicEl.src = profile.avatar_url;
+        if (avatarEl) avatarEl.src = profile.avatar_url;
+    }
+
+    // 6. Show nav items based on role
+    if (profile.role === "vip" || profile.role === "admin" || profile.role === "owner") {
+        if (navVIP) navVIP.style.display = "block";
+    }
+    if (profile.role === "admin" || profile.role === "owner") {
+        if (navAdmin) navAdmin.style.display = "block";
+    }
+    if (profile.role === "owner") {
+        if (navOwner) navOwner.style.display = "block";
+    }
+}
     // 2. Fetch profile data
     const { data: profile, error: profileError } = await client
         .from("profiles")
