@@ -23,7 +23,7 @@ async function initDashboard() {
         return;
     }
 
-    // 2. Hide ALL role-gated nav items by default first
+    // 2. Hide ALL role-gated nav items by default
     if (navVIP) navVIP.style.display = "none";
     if (navAdmin) navAdmin.style.display = "none";
     if (navOwner) navOwner.style.display = "none";
@@ -62,34 +62,6 @@ async function initDashboard() {
         if (navOwner) navOwner.style.display = "block";
     }
 }
-    // 2. Fetch profile data
-    const { data: profile, error: profileError } = await client
-        .from("profiles")
-        .select("role, full_name, avatar_url")
-        .eq("id", user.id)
-        .single();
-
-    if (profile) {
-        userNameEl.textContent = profile.full_name || "User";
-        userEmailEl.textContent = user.email;
-        
-        if (profile.avatar_url) {
-            profilePicEl.src = profile.avatar_url;
-            if (avatarEl) avatarEl.src = profile.avatar_url;
-        }
-
-        // 3. Handle Role Visibility
-        if (profile.role === "vip" || profile.role === "admin" || profile.role === "owner") {
-            if (navVIP) navVIP.style.display = "block";
-        }
-        if (profile.role === "admin" || profile.role === "owner") {
-            if (navAdmin) navAdmin.style.display = "block";
-        }
-        if (profile.role === "owner") {
-            if (navOwner) navOwner.style.display = "block";
-        }
-    }
-}
 
 // Dropdown Toggle Logic
 if (profilePicEl && dropdownMenu) {
@@ -97,7 +69,6 @@ if (profilePicEl && dropdownMenu) {
         e.stopPropagation();
         dropdownMenu.style.display = dropdownMenu.style.display === "flex" ? "none" : "flex";
     });
-
     window.addEventListener("click", (e) => {
         if (!profilePicEl.contains(e.target) && !dropdownMenu.contains(e.target)) {
             dropdownMenu.style.display = "none";
