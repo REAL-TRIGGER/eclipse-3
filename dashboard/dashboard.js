@@ -60,7 +60,7 @@ async function initDashboard() {
     if (["vip", "jr-mod", "mod", "admin", "owner"].includes(role)) {
         navVIP?.classList.remove("hidden");
     }
-    if (["admin", "owner"].includes(role)) {
+    if (["mod", "admin", "owner"].includes(role)) {
         navAdmin?.classList.remove("hidden");
     }
     if (role === "owner") {
