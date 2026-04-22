@@ -17,16 +17,17 @@ const navOwner = document.getElementById("nav-owner");
 
 async function initDashboard() {
     // 1. Check if user is logged in
-    const { data: { user }, error: authError } = await client.auth.getUser();
-    if (authError || !user) {
-        window.location.href = "signin.html";
+    const { data: { session } } = await client.auth.getSession();
+    if (!session) {
+        window.location.href = "../index.html";
         return;
     }
+    const user = session.user;
 
     // 2. Hide ALL role-gated nav items by default
-    if (navVIP) navVIP.style.display = "none";
-    if (navAdmin) navAdmin.style.display = "none";
-    if (navOwner) navOwner.style.display = "none";
+    navVIP?.classList.add("hidden");
+    navAdmin?.classList.add("hidden");
+    navOwner?.classList.add("hidden");
 
     // 3. Fetch profile data
     const { data: profile, error: profileError } = await client
@@ -38,29 +39,32 @@ async function initDashboard() {
     // 4. If profile fetch fails, treat as unauthorized
     if (profileError || !profile) {
         console.error("Profile fetch failed:", profileError);
-        window.location.href = "signin.html";
+        window.location.href = "../index.html";
         return;
     }
 
- // 5. Populate UI
-document.getElementById("userInfo").textContent = `Welcome, ${profile.full_name || "User"}!`;
-userNameEl.textContent = profile.full_name || "User";
-userEmailEl.textContent = user.email;
-    
+    // 5. Populate UI
+    const userInfoEl = document.getElementById("userInfo");
+    if (userInfoEl) userInfoEl.textContent = `Welcome, ${profile.full_name || "User"}!`;
+    if (userNameEl) userNameEl.textContent = profile.full_name || "User";
+    if (userEmailEl) userEmailEl.textContent = user.email;
+
     if (profile.avatar_url) {
-        profilePicEl.src = profile.avatar_url;
+        if (profilePicEl) profilePicEl.src = profile.avatar_url;
         if (avatarEl) avatarEl.src = profile.avatar_url;
     }
 
     // 6. Show nav items based on role
-    if (profile.role === "vip" || profile.role === "admin" || profile.role === "owner") {
-    if (navVIP) navVIP.style.cssText = "display:flex; width:100%;";
-}
-if (profile.role === "admin" || profile.role === "owner") {
-    if (navAdmin) navAdmin.style.cssText = "display:flex; width:100%;";
-}
-if (profile.role === "owner") {
-    if (navOwner) navOwner.style.cssText = "display:flex; width:100%;";
+    const role = profile.role;
+
+    if (["vip", "jr-mod", "mod", "admin", "owner"].includes(role)) {
+        navVIP?.classList.remove("hidden");
+    }
+    if (["admin", "owner"].includes(role)) {
+        navAdmin?.classList.remove("hidden");
+    }
+    if (role === "owner") {
+        navOwner?.classList.remove("hidden");
     }
 }
 
@@ -87,15 +91,23 @@ document.getElementById("logoutBtn2")?.addEventListener("click", async () => {
     window.location.href = "../index.html";
 });
 
-// Wait for auth to initialize then run dashboard
+// Start with retry loop for OAuth redirect timing
 async function start() {
-    // Give Supabase time to process any OAuth token in the URL
-    const { data: { session } } = await client.auth.getSession();
-    
+    let session = null;
+    let attempts = 0;
+
+    while (!session && attempts < 5) {
+        const { data } = await client.auth.getSession();
+        session = data.session;
+        if (!session) {
+            attempts++;
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+    }
+
     if (session) {
         await initDashboard();
     } else {
-        // No session found, redirect to login
         window.location.href = "../index.html";
     }
 }
