@@ -6,12 +6,12 @@ const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // All available permissions with friendly labels
 const PERMISSIONS = [
-  { key: "canBan",             label: "Ban Members",        icon: "fa-ban" },
-  { key: "canMute",            label: "Mute Members",       icon: "fa-microphone-slash" },
-  { key: "canManageLinks",     label: "Manage Links",       icon: "fa-link" },
-  { key: "canManageRoles",     label: "Manage Roles",       icon: "fa-shield-halved" },
-  { key: "canManageUsers",     label: "Manage Users",       icon: "fa-users" },
-  { key: "canManageEverything",label: "Full Access",        icon: "fa-crown" },
+  { key: "canBan",              label: "Ban Members",   icon: "fa-ban" },
+  { key: "canMute",             label: "Mute Members",  icon: "fa-microphone-slash" },
+  { key: "canManageLinks",      label: "Manage Links",  icon: "fa-link" },
+  { key: "canManageRoles",      label: "Manage Roles",  icon: "fa-shield-halved" },
+  { key: "canManageUsers",      label: "Manage Users",  icon: "fa-users" },
+  { key: "canManageEverything", label: "Full Access",   icon: "fa-crown" },
 ];
 
 // ─── OWNER AUTH CHECK ───────────────────────────────────
@@ -62,6 +62,7 @@ checkOwner();
 // ─── LOAD ROLES ─────────────────────────────────────────
 async function loadRoles() {
   const rolesList = document.getElementById("rolesList");
+  rolesList.innerHTML = "<p style='color:#a0a4b8; font-size:13px;'>Loading roles...</p>";
 
   const { data: roles, error } = await client
     .from("roles")
@@ -97,13 +98,12 @@ function renderRoleCard(role) {
         <span>${p.label}</span>
       </div>
       <label class="toggle-switch">
-        <input 
-          type="checkbox" 
+        <input
+          type="checkbox"
           class="perm-toggle"
           data-role-id="${role.id}"
           data-perm="${p.key}"
           ${perms[p.key] ? "checked" : ""}
-          ${role.name === "Owner" ? "disabled" : ""}
         >
         <span class="toggle-slider"></span>
       </label>
@@ -113,13 +113,17 @@ function renderRoleCard(role) {
   return `
     <div class="role-card" id="role-${role.id}">
       <div class="role-card-header">
-        <div class="role-card-title">${getRoleIcon(role.name)} ${role.name}</div>
+        <div class="role-card-title">
+          <span style="font-size:20px;">${role.icon || "🔵"}</span>
+          <span>${role.name}</span>
+        </div>
         <div class="role-card-actions">
-          ${role.name !== "Owner" ? `
-            <button class="btn-danger-small" onclick="deleteRole('${role.id}', '${role.name}')">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          ` : ""}
+          <button class="btn-edit-small" onclick="openEditRoleModal('${role.id}')">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <button class="btn-danger-small" onclick="deleteRole('${role.id}', '${role.name}')">
+            <i class="fa-solid fa-trash"></i>
+          </button>
         </div>
       </div>
       <div class="perm-grid">
@@ -129,22 +133,8 @@ function renderRoleCard(role) {
   `;
 }
 
-function getRoleIcon(name) {
-  const icons = {
-    "Owner": "👑",
-    "Admin": "🛡️",
-    "Mod": "⚔️",
-    "Jr. Mod": "🔨",
-    "VIP": "⭐",
-    "Basic": "⬤",
-    "Visitor": "○",
-  };
-  return icons[name] || "🔵";
-}
-
 // ─── UPDATE PERMISSION ──────────────────────────────────
 async function updatePermission(roleId, permKey, value) {
-  // Get current permissions
   const { data: role } = await client
     .from("roles")
     .select("permissions")
@@ -160,7 +150,6 @@ async function updatePermission(roleId, permKey, value) {
 
   if (error) {
     alert("Failed to update permission.");
-    // Revert toggle visually
     const toggle = document.querySelector(
       `.perm-toggle[data-role-id="${roleId}"][data-perm="${permKey}"]`
     );
@@ -169,23 +158,181 @@ async function updatePermission(roleId, permKey, value) {
 }
 
 // ─── CREATE ROLE ────────────────────────────────────────
-async function createRole() {
-  const name = prompt("Enter new role name:");
-  if (!name) return;
+function openCreateRoleModal() {
+  document.getElementById("createRoleModal")?.remove();
+
+  document.body.insertAdjacentHTML("beforeend", `
+    <div id="createRoleModal" style="
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+    ">
+      <div style="
+        background: #11141b; border-radius: 12px; padding: 30px;
+        width: 400px; border: 1px solid #222; box-shadow: 0 0 40px rgba(0,0,0,0.5);
+      ">
+        <h3 style="margin: 0 0 20px 0; font-size: 18px; color:white;">✨ Create New Role</h3>
+
+        <div style="margin-bottom: 15px;">
+          <label style="display:block; font-size:13px; color:#a0a4b8; margin-bottom:6px;">Role Name</label>
+          <input id="newRoleName" placeholder="e.g. Staff" style="
+            width: 100%; padding: 10px; background: #0d0f14;
+            border: 1px solid #333; border-radius: 6px; color: white;
+            font-size: 14px; box-sizing: border-box;
+          "/>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <label style="display:block; font-size:13px; color:#a0a4b8; margin-bottom:6px;">Icon (emoji)</label>
+          <input id="newRoleIcon" placeholder="e.g. 🔥" style="
+            width: 100%; padding: 10px; background: #0d0f14;
+            border: 1px solid #333; border-radius: 6px; color: white;
+            font-size: 14px; box-sizing: border-box;
+          "/>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display:block; font-size:13px; color:#a0a4b8; margin-bottom:6px;">Color</label>
+          <input id="newRoleColor" type="color" value="#4255ff" style="
+            width: 100%; height: 40px; padding: 2px; background: #0d0f14;
+            border: 1px solid #333; border-radius: 6px; cursor: pointer;
+            box-sizing: border-box;
+          "/>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button onclick="document.getElementById('createRoleModal').remove()" style="
+            background: #1a1d26; color: #a0a4b8; padding: 10px 16px;
+            border-radius: 8px; border: none; cursor: pointer; font-size: 14px; margin-top:0;
+          ">Cancel</button>
+          <button onclick="submitCreateRole()" style="
+            background: #4255ff; color: white; padding: 10px 16px;
+            border-radius: 8px; border: none; cursor: pointer; font-size: 14px;
+            font-weight: bold; margin-top:0;
+          ">Create Role</button>
+        </div>
+      </div>
+    </div>
+  `);
+
+  document.getElementById("newRoleName").focus();
+}
+
+async function submitCreateRole() {
+  const name = document.getElementById("newRoleName").value.trim();
+  const icon = document.getElementById("newRoleIcon").value.trim() || "🔵";
+  const color = document.getElementById("newRoleColor").value;
+
+  if (!name) {
+    alert("Please enter a role name.");
+    return;
+  }
 
   const { error } = await client
     .from("roles")
-    .insert({ name, permissions: {} });
+    .insert({ name, permissions: {}, icon, color });
 
   if (error) {
     alert("Error creating role: " + error.message);
     return;
   }
 
+  document.getElementById("createRoleModal").remove();
   loadRoles();
 }
 
-document.getElementById("createRoleBtn").onclick = createRole;
+window.submitCreateRole = submitCreateRole;
+document.getElementById("createRoleBtn").onclick = openCreateRoleModal;
+
+// ─── EDIT ROLE ──────────────────────────────────────────
+function openEditRoleModal(roleId) {
+  const card = document.getElementById(`role-${roleId}`);
+  const roleName = card.querySelector(".role-card-title span:last-child").textContent;
+  const roleIcon = card.querySelector(".role-card-title span:first-child").textContent;
+
+  document.getElementById("editRoleModal")?.remove();
+
+  document.body.insertAdjacentHTML("beforeend", `
+    <div id="editRoleModal" style="
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+    ">
+      <div style="
+        background: #11141b; border-radius: 12px; padding: 30px;
+        width: 400px; border: 1px solid #222; box-shadow: 0 0 40px rgba(0,0,0,0.5);
+      ">
+        <h3 style="margin: 0 0 20px 0; font-size: 18px; color:white;">✏️ Edit Role</h3>
+
+        <div style="margin-bottom: 15px;">
+          <label style="display:block; font-size:13px; color:#a0a4b8; margin-bottom:6px;">Role Name</label>
+          <input id="editRoleName" value="${roleName}" style="
+            width: 100%; padding: 10px; background: #0d0f14;
+            border: 1px solid #333; border-radius: 6px; color: white;
+            font-size: 14px; box-sizing: border-box;
+          "/>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <label style="display:block; font-size:13px; color:#a0a4b8; margin-bottom:6px;">Icon (emoji)</label>
+          <input id="editRoleIcon" value="${roleIcon}" style="
+            width: 100%; padding: 10px; background: #0d0f14;
+            border: 1px solid #333; border-radius: 6px; color: white;
+            font-size: 14px; box-sizing: border-box;
+          "/>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display:block; font-size:13px; color:#a0a4b8; margin-bottom:6px;">Color</label>
+          <input id="editRoleColor" type="color" value="#4255ff" style="
+            width: 100%; height: 40px; padding: 2px; background: #0d0f14;
+            border: 1px solid #333; border-radius: 6px; cursor: pointer;
+            box-sizing: border-box;
+          "/>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button onclick="document.getElementById('editRoleModal').remove()" style="
+            background: #1a1d26; color: #a0a4b8; padding: 10px 16px;
+            border-radius: 8px; border: none; cursor: pointer; font-size: 14px; margin-top:0;
+          ">Cancel</button>
+          <button onclick="submitEditRole('${roleId}')" style="
+            background: #4255ff; color: white; padding: 10px 16px;
+            border-radius: 8px; border: none; cursor: pointer; font-size: 14px;
+            font-weight: bold; margin-top:0;
+          ">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+async function submitEditRole(roleId) {
+  const name = document.getElementById("editRoleName").value.trim();
+  const icon = document.getElementById("editRoleIcon").value.trim() || "🔵";
+  const color = document.getElementById("editRoleColor").value;
+
+  if (!name) {
+    alert("Please enter a role name.");
+    return;
+  }
+
+  const { error } = await client
+    .from("roles")
+    .update({ name, icon, color })
+    .eq("id", roleId);
+
+  if (error) {
+    alert("Error updating role: " + error.message);
+    return;
+  }
+
+  document.getElementById("editRoleModal").remove();
+  loadRoles();
+}
+
+window.submitEditRole = submitEditRole;
+window.openEditRoleModal = openEditRoleModal;
 
 // ─── DELETE ROLE ────────────────────────────────────────
 async function deleteRole(id, name) {
@@ -197,7 +344,7 @@ async function deleteRole(id, name) {
     .eq("id", id);
 
   if (error) {
-    alert("Error deleting role.");
+    alert("Error deleting role: " + error.message);
     return;
   }
 
