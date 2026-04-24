@@ -97,14 +97,14 @@
 
     /* Header */
     .header {
-      padding: 20px 30px;
-      border-bottom: 1px solid #222;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background: #0d0f14;
-    }
-
+  padding: 20px 30px;
+  border-bottom: 1px solid #222;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #0d0f14;
+  position: relative;
+}
     .header h1 {
       margin: 0;
       font-size: 22px;
@@ -133,8 +133,10 @@
     .header-tab:hover { background: #1a1d26; color: white; }
     .header-tab.active { background: #4255ff22; color: #4255ff; }
 
-    .add-friend-btn {
-  margin-left: auto;
+   .add-friend-btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   padding: 8px 16px;
   background: #4255ff;
   border: none;
