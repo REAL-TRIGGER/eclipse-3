@@ -273,9 +273,158 @@ document.getElementById("addFriendBtn").addEventListener("click", () => {
         </div>
         <div id="searchResults"></div>
         <div style="margin-top:15px; text-align:right;">
-          <button onclick="document.getElementById('addFriendModal').rem
+  <button onclick="document.getElementById('addFriendModal').remove()" style="
+            background:#1a1d26; color:#a0a4b8; padding:10px 16px;
+            border-radius:8px; border:none; cursor:pointer; font-size:14px; margin-top:0;
+          ">Close</button>
+        </div>
+      </div>
+    </div>
+  `);
 
-          window.sendFriendRequest = sendFriendRequest;
+  const input = document.getElementById("friendSearchInput");
+  input.focus();
+
+  input.addEventListener("input", async e => {
+    const query = e.target.value.trim();
+    if (query.length < 2) {
+      document.getElementById("searchResults").innerHTML = "";
+      return;
+    }
+    await searchUsers();
+  });
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") searchUsers();
+  });
+});
+
+async function searchUsers() {
+  const query = document.getElementById("friendSearchInput")?.value.trim();
+  if (!query) return;
+
+  const results = document.getElementById("searchResults");
+  results.innerHTML = `<div style="color:#a0a4b8; font-size:13px;">Searching...</div>`;
+
+  const { data: users } = await client
+    .from("profiles")
+    .select("id, full_name, avatar_url, role")
+    .ilike("full_name", `%${query}%`)
+    .neq("id", currentUser.id)
+    .limit(10);
+
+  if (!users || users.length === 0) {
+    results.innerHTML = `<div style="color:#a0a4b8; font-size:13px;">No users found.</div>`;
+    return;
+  }
+
+  const { data: existing } = await client
+    .from("friendships")
+    .select("*")
+    .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`);
+
+  results.innerHTML = users.map(u => {
+    const friendship = existing?.find(f =>
+      (f.sender_id === currentUser.id && f.receiver_id === u.id) ||
+      (f.receiver_id === currentUser.id && f.sender_id === u.id)
+    );
+
+    let actionBtn = `<button class="btn-add" onclick="sendFriendRequest('${u.id}')"><i class="fa-solid fa-user-plus"></i> Add</button>`;
+    if (friendship?.status === "accepted") actionBtn = `<span style="color:#23a55a; font-size:13px;">✅ Friends</span>`;
+    if (friendship?.status === "pending") actionBtn = `<button class="btn-pending">⏳ Pending</button>`;
+
+    return `
+      <div class="user-card" style="margin-bottom:8px;">
+        <div class="user-avatar-wrap">
+          <img class="user-avatar" src="${u.avatar_url || ''}">
+        </div>
+        <div class="user-info">
+          <div class="user-name" style="color:${ROLE_COLORS[u.role] || '#fff'}">${u.full_name || 'User'}</div>
+          <div class="user-status">${u.role || 'user'}</div>
+        </div>
+        <div class="user-actions">${actionBtn}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+window.searchUsers = searchUsers;
+
+async function sendFriendRequest(receiverId) {
+  const { error } = await client
+    .from("friendships")
+    .insert({ sender_id: currentUser.id, receiver_id: receiverId, status: "pending" });
+
+  if (error) { alert("Error sending request: " + error.message); return; }
+  searchUsers();
+}
+
+async function acceptFriend(friendshipId) {
+  await client.from("friendships").update({ status: "accepted" }).eq("id", friendshipId);
+  loadPending();
+  loadPendingCount();
+}
+
+async function declineFriend(friendshipId) {
+  await client.from("friendships").update({ status: "declined" }).eq("id", friendshipId);
+  loadPending();
+  loadPendingCount();
+}
+
+async function cancelRequest(friendshipId) {
+  await client.from("friendships").delete().eq("id", friendshipId);
+  loadPending();
+  loadPendingCount();
+}
+
+async function removeFriend(friendId) {
+  if (!confirm("Remove this friend?")) return;
+  await client.from("friendships")
+    .delete()
+    .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${currentUser.id})`);
+  loadFriends();
+}
+
+async function startDM(friendId) {
+  const { data: existing } = await client
+    .from("conversation_members")
+    .select("conversation_id, conversations(id, type)")
+    .eq("user_id", currentUser.id);
+
+  let dmId = null;
+  for (const mem of existing || []) {
+    if (mem.conversations?.type === "dm") {
+      const { data: otherMem } = await client
+        .from("conversation_members")
+        .select("user_id")
+        .eq("conversation_id", mem.conversation_id)
+        .eq("user_id", friendId);
+      if (otherMem && otherMem.length > 0) {
+        dmId = mem.conversation_id;
+        break;
+      }
+    }
+  }
+
+  if (!dmId) {
+    const { data: conv } = await client
+      .from("conversations")
+      .insert({ type: "dm", created_by: currentUser.id })
+      .select()
+      .single();
+
+    dmId = conv.id;
+
+    await client.from("conversation_members").insert([
+      { conversation_id: dmId, user_id: currentUser.id },
+      { conversation_id: dmId, user_id: friendId }
+    ]);
+  }
+
+  window.location.href = `messages.html?dm=${dmId}`;
+}
+
+window.sendFriendRequest = sendFriendRequest;
 window.acceptFriend = acceptFriend;
 window.declineFriend = declineFriend;
 window.cancelRequest = cancelRequest;
