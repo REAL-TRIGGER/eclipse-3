@@ -7,6 +7,69 @@
 
   <style>
 
+.owner-sidebar {
+  width: 220px;
+  background: #11141b;
+  border-right: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 20px 0;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.owner-sidebar-header {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid #222;
+  margin-bottom: 10px;
+}
+
+.owner-sidebar-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.owner-sidebar-header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #a0a4b8;
+}
+
+.owner-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #a0a4b8;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.owner-nav-item:hover { background: #1a1d26; color: white; }
+.owner-nav-item.active { background: #4255ff22; color: #4255ff; border-left-color: #4255ff; }
+.owner-nav-item i { width: 18px; text-align: center; }
+.owner-nav-divider { height: 1px; background: #222; margin: 10px 0; }
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  color: #a0a4b8;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+  margin-top: auto;
+}
+
+.back-btn:hover { color: white; }
+
+    
     .btn-edit-small {
   background: #4255ff33;
   color: #c5cbff;
@@ -143,14 +206,14 @@ input:disabled + .toggle-slider {
   opacity: 0.4;
   cursor: not-allowed;
 }
-    body {
-      margin: 0;
-      background: #0d0f14;
-      font-family: Arial, sans-serif;
-      color: white;
-      display: flex;
-      height: 100vh;
-    }
+   body {
+  margin: 0;
+  background: #0d0f14;
+  font-family: Arial, sans-serif;
+  color: white;
+  display: flex;
+}
+
 
     .sidebar {
       width: 260px;
@@ -171,12 +234,14 @@ input:disabled + .toggle-slider {
       font-size: 14px;
     }
 
-    .content {
-      flex: 1;
-      padding: 30px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
+   .content {
+  margin-left: 220px;
+  flex: 1;
+  padding: 30px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  min-height: 100vh;
+}
 
     .title {
       font-size: 30px;
@@ -227,11 +292,28 @@ input:disabled + .toggle-slider {
 </head>
 
 <body>
-  <div class="sidebar">
-    <h2><i class="fa-solid fa-crown"></i> Owner Panel</h2>
-    <p>You are logged in as <span id="ownerName">Owner</span>.</p>
-    <p class="danger">This area controls the entire site.</p>
+  <div class="owner-sidebar">
+  <div class="owner-sidebar-header">
+    <h2>👑 Owner Panel</h2>
+    <p id="ownerName">Loading...</p>
   </div>
+
+  <a class="owner-nav-item" href="controlroom.html">
+    <i class="fa-solid fa-gauge-high"></i> Control Room
+  </a>
+  <a class="owner-nav-item active" href="owner.html">
+    <i class="fa-solid fa-shield-halved"></i> Role Manager
+  </a>
+  <a class="owner-nav-item" href="usermanager.html">
+    <i class="fa-solid fa-users"></i> User Manager
+  </a>
+
+  <div class="owner-nav-divider"></div>
+
+  <a class="back-btn" href="index.html">
+    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+  </a>
+</div>
 
 <a href="index.html" style="
   display: inline-flex;
