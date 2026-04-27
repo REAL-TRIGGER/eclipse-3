@@ -63,7 +63,11 @@ function populateDropdown(profile) {
 
   if (userNameEl) { userNameEl.textContent = profile.full_name || "User"; userNameEl.style.color = roleColor; }
   if (userEmailEl) userEmailEl.textContent = currentUser.email;
-  if (roleTag) { roleTag.textContent = profile.role; roleTag.style.color = roleColor; roleTag.style.border = `1px solid ${roleColor}`; }
+ if (roleTag) { 
+  roleTag.textContent = profile.role.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); 
+  roleTag.style.color = roleColor; 
+  roleTag.style.border = `1px solid ${roleColor}`; 
+}
   if (profilePicEl && profile.avatar_url) { profilePicEl.src = profile.avatar_url; profilePicEl.style.borderColor = roleColor; }
 
   const profilePic = document.getElementById("profilePic");
