@@ -27,32 +27,39 @@
 
     .title {
       font-size: 28px;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
     }
 
-    .google-btn {
+    .subtitle {
+      font-size: 13px;
+      color: #a0a4b8;
+      margin-bottom: 30px;
+    }
+
+    .github-btn {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
       width: 100%;
       padding: 12px;
-      background: white;
-      color: #444;
-      border: none;
+      background: #24292e;
+      color: white;
+      border: 1px solid #444;
       border-radius: 6px;
       cursor: pointer;
       font-size: 16px;
       font-weight: bold;
+      transition: background 0.2s;
+      margin-bottom: 12px;
     }
 
-    .google-btn:hover {
-      background: #e8e8e8;
+    .github-btn:hover {
+      background: #2f363d;
     }
 
-    .google-logo {
-      width: 22px;
-      height: 22px;
+    .github-btn i {
+      font-size: 20px;
     }
 
     #error {
@@ -62,15 +69,18 @@
       font-size: 13px;
     }
   </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
   <div class="box">
     <div class="title">Eclipse 3.0</div>
+    <div class="subtitle">Sign in to continue</div>
 
-    <button class="google-btn" onclick="googleSignIn()">
-      <img class="google-logo" src="https://developers.google.com/identity/images/g-logo.png">
-      Sign in with Google
+    <button class="github-btn" onclick="githubSignIn()">
+      <i class="fa-brands fa-github"></i>
+      Sign in with GitHub
     </button>
 
     <p id="error"></p>
@@ -84,15 +94,20 @@
       "sb_publishable_1nCcJXlQRAkhXV-gz1p8Qg_vcPDYFH4"
     );
 
-    window.googleSignIn = async () => {
+    // If already signed in, redirect to dashboard
+    const { data: { session } } = await client.auth.getSession();
+    if (session) {
+      window.location.href = "dashboard/index.html";
+    }
+
+    window.githubSignIn = async () => {
       try {
-        const { data, error } = await client.auth.signInWithOAuth({
-          provider: "google",
+        const { error } = await client.auth.signInWithOAuth({
+          provider: "github",
           options: {
             redirectTo: "https://real-trigger.github.io/eclipse-3/dashboard/index.html"
           }
         });
-
         if (error) throw error;
       } catch (err) {
         document.getElementById("error").innerText = err.message;
